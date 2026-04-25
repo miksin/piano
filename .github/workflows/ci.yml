@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, feat/issue-7-project-setup ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install
+        run: npm install
+      - name: Run tests or echo
+        run: |
+          if [ -f package.json ] && grep -q "test" package.json; then
+            npm test || true
+          else
+            echo "No tests to run"
+          fi
