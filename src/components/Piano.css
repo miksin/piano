@@ -1,0 +1,126 @@
+/* Piano CSS */
+.piano-keyboard-wrapper {
+  --piano-white-key-width: clamp(20px, 2.3vw, 26px);
+  --piano-white-key-height: clamp(100px, 12vw, 140px);
+  --piano-black-key-width: calc(var(--piano-white-key-width) * 0.6);
+  --piano-black-key-height: calc(var(--piano-white-key-height) * 0.65);
+  --piano-color-accent: #0b84ff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  user-select: none;
+}
+
+.piano-octave-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.piano-octave-controls button {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.piano-octave-controls button:hover {
+  background: #e0e0e0;
+}
+
+.piano-octave-label {
+  font-size: 0.9rem;
+  color: #555;
+  min-width: 80px;
+  text-align: center;
+}
+
+.piano-keys {
+  position: relative;
+  display: flex;
+  height: var(--piano-white-key-height);
+}
+
+.piano-key {
+  position: relative;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 4px;
+  transition: background 0.05s;
+}
+
+.piano-key--white {
+  width: var(--piano-white-key-width);
+  height: var(--piano-white-key-height);
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 0 0 4px 4px;
+  z-index: 1;
+}
+
+.piano-key--white:hover {
+  background: #f0f8ff;
+}
+
+.piano-key--white.piano-key--active {
+  background: var(--piano-color-accent);
+}
+
+.piano-key--black {
+  width: var(--piano-black-key-width);
+  height: var(--piano-black-key-height);
+  background: #222;
+  border-radius: 0 0 3px 3px;
+  z-index: 2;
+  margin-left: calc(var(--piano-black-key-width) / -2);
+  margin-right: calc(var(--piano-black-key-width) / -2);
+  border: 1px solid #000;
+}
+
+.piano-key--black:hover {
+  background: #444;
+}
+
+.piano-key--black.piano-key--active {
+  background: var(--piano-color-accent);
+}
+
+.piano-key__labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.piano-key__shortcut {
+  font-size: 8px;
+  color: #999;
+  font-family: monospace;
+}
+
+.piano-key--black .piano-key__shortcut {
+  color: #aaa;
+}
+
+.piano-key__note {
+  font-size: 9px;
+  color: #666;
+  font-family: system-ui, sans-serif;
+}
+
+@media (max-width: 600px) {
+  .piano-keyboard-wrapper {
+    --piano-white-key-width: clamp(16px, 4vw, 22px);
+    --piano-white-key-height: clamp(80px, 18vw, 110px);
+  }
+}
