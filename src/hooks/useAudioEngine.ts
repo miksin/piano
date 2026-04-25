@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AudioEngine } from '../audio/audioEngine'
-import { pianoInstrument } from '../audio/instruments'
+import { SamplerEngine } from '../audio/samplerEngine'
 
 export interface AudioEngineHook {
   playNote: (note: string, velocity?: number) => void
@@ -13,7 +12,7 @@ export interface AudioEngineHook {
 }
 
 export function useAudioEngine(): AudioEngineHook {
-  const engineRef = useRef<AudioEngine | null>(null)
+  const engineRef = useRef<SamplerEngine | null>(null)
   const [isReady, setIsReady] = useState(false)
   // UI state mirrors engine state for synchronization
   const [volume, setVolumeState] = useState<number>(0.7)
@@ -21,7 +20,7 @@ export function useAudioEngine(): AudioEngineHook {
 
   // Lazily create engine
   if (!engineRef.current) {
-    engineRef.current = new AudioEngine(pianoInstrument)
+    engineRef.current = new SamplerEngine()
   }
 
   // Clean up on unmount
@@ -60,6 +59,7 @@ export function useAudioEngine(): AudioEngineHook {
   }, [])
 
   const setTimbre = useCallback((timbre: OscillatorType) => {
+    // No-op for sampler engine; keep API compatibility
     engineRef.current?.setTimbre(timbre)
     setTimbreState(timbre)
   }, [])

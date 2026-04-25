@@ -23,6 +23,7 @@ export default function App(): React.JSX.Element {
         onVolumeChange={setVolume}
         timbre={timbre}
         onTimbreChange={setTimbre}
+        showTimbre={false}
       />
       {isSupported && (
         <div className="midi-status">
