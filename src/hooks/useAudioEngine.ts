@@ -6,6 +6,8 @@ export interface AudioEngineHook {
   playNote: (note: string, velocity?: number) => void
   stopNote: (note: string) => void
   isReady: boolean
+  volume: number
+  timbre: OscillatorType
   setVolume: (volume: number) => void
   setTimbre: (timbre: OscillatorType) => void
 }
@@ -13,6 +15,9 @@ export interface AudioEngineHook {
 export function useAudioEngine(): AudioEngineHook {
   const engineRef = useRef<AudioEngine | null>(null)
   const [isReady, setIsReady] = useState(false)
+  // UI state mirrors engine state for synchronization
+  const [volume, setVolumeState] = useState<number>(0.7)
+  const [timbre, setTimbreState] = useState<OscillatorType>('triangle')
 
   // Lazily create engine
   if (!engineRef.current) {
@@ -51,13 +56,23 @@ export function useAudioEngine(): AudioEngineHook {
 
   const setVolume = useCallback((volume: number) => {
     engineRef.current?.setVolume(volume)
+    setVolumeState(volume)
   }, [])
 
   const setTimbre = useCallback((timbre: OscillatorType) => {
     engineRef.current?.setTimbre(timbre)
+    setTimbreState(timbre)
   }, [])
 
-  return { playNote, stopNote, isReady, setVolume, setTimbre }
+  return {
+    playNote,
+    stopNote,
+    isReady,
+    volume,
+    timbre,
+    setVolume,
+    setTimbre,
+  }
 }
 
 export default useAudioEngine
