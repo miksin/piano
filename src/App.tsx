@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function App(){
+export default function App(): React.JSX.Element {
   return (
     <div className="app">
       <h1>Piano</h1>
