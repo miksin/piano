@@ -62,8 +62,9 @@ export default function PianoKeyboard({
     if (!k.isBlack) {
       whiteIdx++
     } else {
-      // black key sits between previous white key and next
-      blackKeyPositions.push({ key: k, whiteIndex: whiteIdx - 0.5 })
+      // black key sits on the right edge of the previous white key
+      // translateX(-50%) in CSS will center it between the two white keys
+      blackKeyPositions.push({ key: k, whiteIndex: whiteIdx })
     }
   }
 
