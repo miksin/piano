@@ -8,11 +8,12 @@ type AudioControlsProps = {
   onVolumeChange: (v: number) => void
   timbre: OscillatorType
   onTimbreChange: (t: OscillatorType) => void
+  showTimbre?: boolean
 }
 
 // Timbre options align with Web Audio OscillatorType: 'sine' | 'triangle' | 'square' | 'sawtooth'
 
-export default function AudioControls({ volume, onVolumeChange, timbre, onTimbreChange }: AudioControlsProps): React.JSX.Element {
+export default function AudioControls({ volume, onVolumeChange, timbre, onTimbreChange, showTimbre = false }: AudioControlsProps): React.JSX.Element {
   // Timbre options align with Web Audio OscillatorType: 'sine' | 'triangle' | 'square' | 'sawtooth'
   const timbres: Timbre[] = useMemo(() => ['sine', 'triangle', 'square', 'sawtooth'], [])
   // Handlers
@@ -42,14 +43,16 @@ export default function AudioControls({ volume, onVolumeChange, timbre, onTimbre
               onChange={handleVolumeChange}
             />
 		  </div>
-		  <div className="audio-controls__group">
-			<label className="audio-controls__label" htmlFor="timbre">Timbre</label>
-            <select id="timbre" className="audio-controls__select" value={timbre} onChange={handleTimbreChange}>
-			  {timbres.map((t) => (
-				<option key={t} value={t}>{t}</option>
-			  ))}
-			</select>
-		  </div>
+		  {showTimbre && (
+		    <div className="audio-controls__group">
+		      <label className="audio-controls__label" htmlFor="timbre">Timbre</label>
+		      <select id="timbre" className="audio-controls__select" value={timbre} onChange={handleTimbreChange}>
+		        {timbres.map((t) => (
+		          <option key={t} value={t}>{t}</option>
+		        ))}
+		      </select>
+		    </div>
+		  )}
 		</div>
 	)
 }
