@@ -27,8 +27,12 @@ export class Sampler {
 
 export const Destination = {}
 
+// Provide a mock for Tone.start used to unlock AudioContext in tests
+export const start = vi.fn().mockResolvedValue(undefined)
+
 // Optional default export for compatibility with code that imports Tone.js as a default namespace
 export default {
   Sampler,
-  Destination
+  Destination,
+  start
 }
