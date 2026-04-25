@@ -6,6 +6,8 @@ export interface AudioEngineHook {
   playNote: (note: string, velocity?: number) => void
   stopNote: (note: string) => void
   isReady: boolean
+  setVolume: (volume: number) => void
+  setTimbre: (timbre: OscillatorType) => void
 }
 
 export function useAudioEngine(): AudioEngineHook {
@@ -47,7 +49,15 @@ export function useAudioEngine(): AudioEngineHook {
     engineRef.current?.stopNote(note)
   }, [])
 
-  return { playNote, stopNote, isReady }
+  const setVolume = useCallback((volume: number) => {
+    engineRef.current?.setVolume(volume)
+  }, [])
+
+  const setTimbre = useCallback((timbre: OscillatorType) => {
+    engineRef.current?.setTimbre(timbre)
+  }, [])
+
+  return { playNote, stopNote, isReady, setVolume, setTimbre }
 }
 
 export default useAudioEngine

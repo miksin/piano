@@ -34,9 +34,13 @@ export class AudioEngine {
   private context: AudioContext | null = null
   private activeNotes: Map<string, ActiveNote> = new Map()
   private instrument: InstrumentConfig
+  private volume: number = 1
+  private timbre: OscillatorType
 
   constructor(instrument: InstrumentConfig = pianoInstrument) {
     this.instrument = instrument
+    // Initialize timbre to the instrument's oscillator type
+    this.timbre = instrument.oscillatorType
   }
 
   /** Initialize or resume AudioContext (must be called from user gesture) */
@@ -62,18 +66,21 @@ export class AudioEngine {
     }
 
     const ctx = this.context
-    const { oscillatorType, attack, decay, sustain, gainMultiplier, detune } = this.instrument
+    const { attack, decay, sustain, gainMultiplier, detune } = this.instrument
     const freq = noteToFrequency(note)
     const now = ctx.currentTime
 
     const gainNode = ctx.createGain()
+    // Apply global volume to the envelope
     gainNode.gain.setValueAtTime(0, now)
-    gainNode.gain.linearRampToValueAtTime(gainMultiplier * velocity, now + attack)
-    gainNode.gain.linearRampToValueAtTime(gainMultiplier * velocity * sustain, now + attack + decay)
+    const vol = Math.max(0, Math.min(1, this.volume))
+    gainNode.gain.linearRampToValueAtTime(gainMultiplier * velocity * vol, now + attack)
+    gainNode.gain.linearRampToValueAtTime(gainMultiplier * velocity * vol * sustain, now + attack + decay)
     gainNode.connect(ctx.destination)
 
     const osc1 = ctx.createOscillator()
-    osc1.type = oscillatorType
+    // Use current timbre for oscillator(s)
+    osc1.type = this.timbre
     osc1.frequency.setValueAtTime(freq, now)
     osc1.connect(gainNode)
     osc1.start(now)
@@ -81,7 +88,7 @@ export class AudioEngine {
     let osc2: OscillatorNode | undefined
     if (detune !== undefined) {
       osc2 = ctx.createOscillator()
-      osc2.type = 'sine'
+      osc2.type = this.timbre
       osc2.frequency.setValueAtTime(freq, now)
       osc2.detune.setValueAtTime(detune, now)
       osc2.connect(gainNode)
@@ -125,5 +132,33 @@ export class AudioEngine {
     this.stopAll()
     this.context?.close()
     this.context = null
+  }
+
+  // Volume: 0.0 - 1.0 multiplier for envelope amplitude
+  setVolume(volume: number): void {
+    const vol = Math.max(0, Math.min(1, volume))
+    const oldVolume = this.volume
+    this.volume = vol
+    if (!this.context || this.context.state !== 'running') return
+    // Scale existing active notes' gains to reflect new volume
+    if (oldVolume > 0) {
+      const ratio = vol / oldVolume
+      this.activeNotes.forEach(({ gainNode }) => {
+        try {
+          gainNode.gain.value = gainNode.gain.value * ratio
+        } catch {
+          // ignore if node not ready
+        }
+      })
+    }
+  }
+
+  // Timbre: sine | triangle | square | sawtooth
+  setTimbre(timbre: OscillatorType): void {
+    // Clamp to allowed oscillator types
+    const allowed: OscillatorType[] = ['sine', 'triangle', 'square', 'sawtooth']
+    if (!allowed.includes(timbre)) return
+    this.timbre = timbre
+    // Existing notes cannot retroactively change timbre; future notes will use new timbre
   }
 }
