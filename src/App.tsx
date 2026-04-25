@@ -1,7 +1,9 @@
 import React from 'react'
 import PianoKeyboard from './components/PianoKeyboard'
+import { useAudioEngine } from './hooks/useAudioEngine'
 
 export default function App(): React.JSX.Element {
+  const { playNote, stopNote } = useAudioEngine()
   return (
     <div className="app">
       <h1>Piano</h1>
@@ -10,8 +12,8 @@ export default function App(): React.JSX.Element {
         octaves={2}
         showNoteLabels={true}
         showShortcutLabels={true}
-        onNoteOn={(note, velocity) => console.log('noteOn', note, velocity)}
-        onNoteOff={(note) => console.log('noteOff', note)}
+        onNoteOn={playNote}
+        onNoteOff={stopNote}
       />
     </div>
   )
