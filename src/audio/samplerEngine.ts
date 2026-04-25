@@ -21,6 +21,8 @@ export class SamplerEngine {
 
   // Initialize Tone context and preload samples
   async initialize(): Promise<void> {
+    // Unlock AudioContext as early as possible to satisfy autoplay policies
+    await Tone.start()
     if (!this.sampler) {
       // Build sample map for all required notes
       const notes: string[] = [
