@@ -1,7 +1,7 @@
 /* Piano CSS — Superhuman dark theme */
 .piano-keyboard-wrapper {
-  --piano-white-key-width: clamp(20px, 2.3vw, 26px);
-  --piano-white-key-height: clamp(100px, 12vw, 140px);
+  --piano-white-key-width: clamp(36px, 3.5vw, 52px);
+  --piano-white-key-height: clamp(140px, 16vw, 200px);
   --piano-black-key-width: calc(var(--piano-white-key-width) * 0.6);
   --piano-black-key-height: calc(var(--piano-white-key-height) * 0.65);
   --piano-color-accent: #cbb7fb;
@@ -11,6 +11,9 @@
   align-items: center;
   gap: 0.75rem;
   user-select: none;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
 }
 
 .piano-octave-controls {
@@ -151,7 +154,7 @@
 
 @media (max-width: 600px) {
   .piano-keyboard-wrapper {
-    --piano-white-key-width: clamp(16px, 4vw, 22px);
-    --piano-white-key-height: clamp(80px, 18vw, 110px);
+    --piano-white-key-width: clamp(18px, 4.5vw, 28px);
+    --piano-white-key-height: clamp(90px, 20vw, 130px);
   }
 }
