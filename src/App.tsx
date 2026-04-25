@@ -17,7 +17,7 @@ export default function App(): React.JSX.Element {
       )}
       <PianoKeyboard
         baseOctave={3}
-        octaves={2}
+        octaves={3}
         showNoteLabels={true}
         showShortcutLabels={true}
         onNoteOn={playNote}

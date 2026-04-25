@@ -88,7 +88,7 @@ export default function PianoKeyboard({
           />
         ))}
         {/* Black keys overlay */}
-        <div style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', display: 'contents' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', width: '100%', height: '100%' }}>
           {blackKeyPositions.map(({ key: k, whiteIndex }) => (
             <div
               key={k.note}
