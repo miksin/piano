@@ -1,15 +1,26 @@
 @import './tokens.css';
 
 .app {
-  font-family: system-ui, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
   padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d0d1a 0%, #1a1040 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .piano {
   margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: var(--radius-md);
+  padding: 2rem 2.5rem;
+  border: 1px solid rgba(203, 183, 251, 0.15);
+  border-radius: 16px;
+  background: rgba(26, 16, 64, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgba(203, 183, 251, 0.08),
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(203, 183, 251, 0.04);
   color: var(--color-muted);
-  background: #fff;
 }

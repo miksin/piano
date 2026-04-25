@@ -1,11 +1,20 @@
-/* Design tokens (basic) */
+/* Design tokens — Superhuman dark theme */
 :root {
-  --color-bg: #ffffff;
-  --color-text: #111827;
-  --color-muted: #6b7280;
-  --radius-md: 6px;
+  --color-bg: #0d0d1a;
+  --color-bg-end: #1a1040;
+  --color-text: #e8e4f0;
+  --color-muted: #9c92b8;
+  --color-accent: #cbb7fb;
+  --radius-md: 8px;
 }
 
-body { background: var(--color-bg); color: var(--color-text); }
+* { box-sizing: border-box; }
 
-.piano { background: #fafafa; }
+body {
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-end) 100%);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
