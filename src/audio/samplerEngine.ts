@@ -25,14 +25,22 @@ export class SamplerEngine {
     await Tone.start()
     if (!this.sampler) {
       // Build sample map for all required notes
-      const notes: string[] = [
-        'A0','C1','D#1','F#1','A1','C2','D#2','F#2','A2','C3','D#3','F#3','A3','C4','D#4','F#4','A4','C5','D#5','F#5','A5','C6','D#6','F#6','A6','C7','D#7','F#7','A7','C8'
-      ]
+      // gleitz CDN uses flat (b) notation, not sharp (#)
+      // Map: Tone.js note name → actual filename on CDN
+      const sampleMap: Record<string, string> = {
+        'A0': 'A0', 'C1': 'C1', 'D#1': 'Eb1', 'F#1': 'Gb1',
+        'A1': 'A1', 'C2': 'C2', 'D#2': 'Eb2', 'F#2': 'Gb2',
+        'A2': 'A2', 'C3': 'C3', 'D#3': 'Eb3', 'F#3': 'Gb3',
+        'A3': 'A3', 'C4': 'C4', 'D#4': 'Eb4', 'F#4': 'Gb4',
+        'A4': 'A4', 'C5': 'C5', 'D#5': 'Eb5', 'F#5': 'Gb5',
+        'A5': 'A5', 'C6': 'C6', 'D#6': 'Eb6', 'F#6': 'Gb6',
+        'A6': 'A6', 'C7': 'C7', 'D#7': 'Eb7', 'F#7': 'Gb7',
+        'A7': 'A7', 'C8': 'C8',
+      }
       const baseUrl = 'https://gleitz.github.io/midi-js-soundfonts/MusyngKite/acoustic_grand_piano-mp3/'
       const samples: Record<string, string> = {}
-      for (const n of notes) {
-        // Note: the URL pattern uses the note filename directly
-        samples[n] = `${n}.mp3`
+      for (const [note, filename] of Object.entries(sampleMap)) {
+        samples[note] = `${filename}.mp3`
       }
 
       // Create the sampler with onload callback
