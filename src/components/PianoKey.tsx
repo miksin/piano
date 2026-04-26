@@ -1,4 +1,5 @@
 import React from 'react'
+import * as Tone from 'tone'
 import type { PianoKeyProps } from '../types/piano'
 import './Piano.css'
 
@@ -30,8 +31,18 @@ export default function PianoKey({
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
-      onTouchStart={(e) => { e.preventDefault(); onNoteOn(note, 100) }}
+      onTouchStart={async (e) => {
+        // Prevent 300ms mobile click delay and ensure AudioContext is started in touch gesture
+        e.preventDefault()
+        try {
+          await Tone.start()
+        } catch {
+          // ignore startup errors; Tone may already be started or unavailable in test env
+        }
+        onNoteOn(note, 100)
+      }}
       onTouchEnd={() => onNoteOff(note)}
+      onTouchCancel={() => onNoteOff(note)}
     >
       <span className="piano-key__labels">
         {showShortcutLabel && shortcut && (
