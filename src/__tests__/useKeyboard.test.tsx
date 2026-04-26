@@ -63,6 +63,49 @@ describe('useKeyboard', () => {
     expect(onNoteOff).not.toHaveBeenCalled()
   })
 
+  it('sustain pedal delays noteOff until pedal release', () => {
+    const onNoteOn = vi.fn()
+    const onNoteOff = vi.fn()
+    const onSustainChange = vi.fn()
+    renderHook(() => useKeyboard(onNoteOn, onNoteOff, onSustainChange))
+    act(() => {
+      // press sustain pedal
+      fireKeyDown(' ')
+      // press a key
+      fireKeyDown('z')
+      // release the key while sustain is active
+      fireKeyUp('z')
+      // release sustain pedal
+      fireKeyUp(' ')
+    })
+    // Note should be turned off only after pedal release
+    expect(onNoteOff).toHaveBeenCalledWith('C3')
+    // sustain change events should have been emitted
+    expect(onSustainChange).toHaveBeenCalledWith(true)
+    // last sustain state should be false after release
+    expect(onSustainChange).toHaveBeenCalledWith(false)
+  })
+
+  it('sustain with multiple notes', () => {
+    const onNoteOn = vi.fn()
+    const onNoteOff = vi.fn()
+    const onSustainChange = vi.fn()
+    renderHook(() => useKeyboard(onNoteOn, onNoteOff, onSustainChange))
+    act(() => {
+      fireKeyDown(' ')
+      fireKeyDown('z') // C3
+      fireKeyDown('x') // D3
+      // release both keys while sustain is active
+      fireKeyUp('z')
+      fireKeyUp('x')
+      // release sustain pedal
+      fireKeyUp(' ')
+    })
+    // Both notes should be turned off on pedal release
+    expect(onNoteOff).toHaveBeenCalledWith('C3')
+    expect(onNoteOff).toHaveBeenCalledWith('D3')
+  })
+
   it('uppercase keys are handled (case-insensitive)', () => {
     renderHook(() => useKeyboard(onNoteOn, onNoteOff))
     act(() => fireKeyDown('Z')) // uppercase Z

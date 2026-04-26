@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 
 // Fixed mapping for 2 octaves starting C3
 const KEY_TO_NOTE: Record<string, string> = {
@@ -14,18 +14,50 @@ export const NOTE_TO_KEY: Record<string, string> = Object.fromEntries(
 
 export function useKeyboard(
   onNoteOn: (note: string, velocity: number) => void,
-  onNoteOff: (note: string) => void
+  onNoteOff: (note: string) => void,
+  onSustainChange?: (active: boolean) => void
 ) {
+  // Sustain pedal state and notes that are sustained
+  const sustainedNotes = useRef<Set<string>>(new Set())
+  const sustainActive = useRef<boolean>(false)
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.repeat) return
+    // Spacebar controls sustain pedal
+    const isSpace = e.code === 'Space' || e.key === ' '
+    if (isSpace) {
+      if (!sustainActive.current) {
+        sustainActive.current = true
+        onSustainChange?.(true)
+      }
+      e.preventDefault()
+      return
+    }
     const note = KEY_TO_NOTE[e.key.toLowerCase()]
     if (note) onNoteOn(note, 100)
-  }, [onNoteOn])
+  }, [onNoteOn, onSustainChange])
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    const isSpace = e.code === 'Space' || e.key === ' '
+    if (isSpace) {
+      if (sustainActive.current) {
+        sustainActive.current = false
+        // Release all sustained notes when pedal is released
+        sustainedNotes.current.forEach(n => onNoteOff(n))
+        sustainedNotes.current.clear()
+        onSustainChange?.(false)
+      }
+      e.preventDefault()
+      return
+    }
     const note = KEY_TO_NOTE[e.key.toLowerCase()]
-    if (note) onNoteOff(note)
-  }, [onNoteOff])
+    if (!note) return
+    if (sustainActive.current) {
+      sustainedNotes.current.add(note)
+    } else {
+      onNoteOff(note)
+    }
+  }, [onNoteOff, onSustainChange])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)

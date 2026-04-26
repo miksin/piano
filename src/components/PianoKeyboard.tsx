@@ -29,6 +29,8 @@ export default function PianoKeyboard({
 }: PianoKeyboardProps): React.JSX.Element {
   const [currentBase, setCurrentBase] = useState(baseOctave)
   const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set())
+  // Sustain pedal state exposed to UI
+  const [sustainActive, setSustainActive] = useState(false)
 
   const handleNoteOn = useCallback((note: string, velocity: number) => {
     setActiveNotes(prev => new Set([...prev, note]))
@@ -44,7 +46,11 @@ export default function PianoKeyboard({
     onNoteOff?.(note)
   }, [onNoteOff])
 
-  useKeyboard(handleNoteOn, handleNoteOff)
+  // Hook with sustain change callback to reflect sustain state in UI
+  const handleSustainChange = useCallback((active: boolean) => {
+    setSustainActive(active)
+  }, [])
+  useKeyboard(handleNoteOn, handleNoteOff, handleSustainChange)
 
   const keys = buildKeys(currentBase, octaves)
   const lastOctave = currentBase + octaves - 1
@@ -113,6 +119,16 @@ export default function PianoKeyboard({
             </div>
           ))}
         </div>
+      </div>
+      <div className="piano-sustain-status" aria-label="sustain-status" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+        <span
+          aria-label="sustain-led"
+          className={`piano-led ${sustainActive ? 'on' : 'off'}`}
+          style={{ width: 10, height: 10, borderRadius: '50%', display: 'inline-block', background: sustainActive ? '#4ade80' : '#374151' }}
+        />
+        <span style={{ color: '#9c92b8', fontFamily: 'Inter, system-ui, sans-serif' }}>
+          Sustain: {sustainActive ? 'On' : 'Off'}
+        </span>
       </div>
     </div>
   )
