@@ -15,7 +15,7 @@ export function useAudioEngine(): AudioEngineHook {
   const engineRef = useRef<SamplerEngine | null>(null)
   const [isReady, setIsReady] = useState(false)
   // UI state mirrors engine state for synchronization
-  const [volume, setVolumeState] = useState<number>(0.7)
+  const [volume, setVolumeState] = useState<number>(0.4)
   const [timbre, setTimbreState] = useState<OscillatorType>('triangle')
 
   // Lazily create engine
